@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { useState } from "react";
+import { useState, useEffect } from "react"; // added useEffect
 import Todo from "./components/Todo";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
@@ -15,37 +15,77 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 function App(props) {
   const [filter, setFilter] = useState("All");
 
+  // Added this
+  useEffect(() => {
+    fetch("http://localhost:8000/api/todos/")
+      .then((response) => response.json())
+      .then((data) => setTasks(data))
+      .catch((error) => console.error("Error:", error));
+  }, []);
+
+  // function toggleTaskCompleted(id) {
+  //   const updatedTasks = tasks.map((task) => {
+  //     // if this task has the same ID as the edited task
+  //     if (id === task.id) {
+  //       // use object spread to make a new object
+  //       // whose `completed` prop has been inverted
+  //       return { ...task, completed: !task.completed };
+  //     }
+  //     return task;
+  //   });
+  //   setTasks(updatedTasks);
+  // }
   function toggleTaskCompleted(id) {
-    const updatedTasks = tasks.map((task) => {
-      // if this task has the same ID as the edited task
-      if (id === task.id) {
-        // use object spread to make a new object
-        // whose `completed` prop has been inverted
-        return { ...task, completed: !task.completed };
-      }
-      return task;
-    });
-    setTasks(updatedTasks);
+    const task = tasks.find((t) => t.id === id);
+    fetch(`http://localhost:8000/api/todos/${id}/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: !task.completed }),
+    })
+      .then((response) => response.json())
+      .then((updatedTask) => {
+        setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+      })
+      .catch((error) => console.error("Error:", error));
   }
 
+  // function deleteTask(id) {
+  //   const remainingTasks = tasks.filter((task) => id !== task.id);
+  //   setTasks(remainingTasks);
+  // }
   function deleteTask(id) {
-    const remainingTasks = tasks.filter((task) => id !== task.id);
-    setTasks(remainingTasks);
+    fetch(`http://localhost:8000/api/todos/${id}/`, { method: "DELETE" })
+      .then(() => setTasks(tasks.filter((task) => id !== task.id)))
+      .catch((error) => console.error("Error:", error));
   }
+
+  // function editTask(id, newName) {
+  //   const editedTaskList = tasks.map((task) => {
+  //     // if this task has the same ID as the edited task
+  //     if (id === task.id) {
+  //       // Copy the task and update its name
+  //       return { ...task, name: newName };
+  //     }
+  //     // Return the original task if it's not the edited task
+  //     return task;
+  //   });
+  //   setTasks(editedTaskList);
+  // }
 
   function editTask(id, newName) {
-    const editedTaskList = tasks.map((task) => {
-      // if this task has the same ID as the edited task
-      if (id === task.id) {
-        // Copy the task and update its name
-        return { ...task, name: newName };
-      }
-      // Return the original task if it's not the edited task
-      return task;
-    });
-    setTasks(editedTaskList);
+    fetch(`http://localhost:8000/api/todos/${id}/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newName }),
+    })
+      .then((response) => response.json())
+      .then((updatedTask) => {
+        setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+      })
+      .catch((error) => console.error("Error:", error));
   }
-  const [tasks, setTasks] = useState(props.tasks);
+
+  const [tasks, setTasks] = useState([]); // tasks starts as an empty array and useffect will populate them from the API when the component
   const taskList = tasks
     .filter(FILTER_MAP[filter])
     .map((task) => (
@@ -69,9 +109,19 @@ function App(props) {
     />
   ));
 
+  // function addTask(name) {
+  //   const newTask = { id: `todo-${nanoid()}`, name, completed: false };
+  //   setTasks([...tasks, newTask]);
+  // }
   function addTask(name) {
-    const newTask = { id: `todo-${nanoid()}`, name, completed: false };
-    setTasks([...tasks, newTask]);
+    fetch("http://localhost:8000/api/todos/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, completed: false }),
+    })
+      .then((response) => response.json())
+      .then((newTask) => setTasks([...tasks, newTask]))
+      .catch((error) => console.error("Error:", error));
   }
   const tasksNoun = taskList.length !== 1 ? "tasks" : "task";
   const headingText = `${taskList.length} ${tasksNoun} remaining`;
