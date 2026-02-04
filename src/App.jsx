@@ -23,18 +23,6 @@ function App(props) {
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  // function toggleTaskCompleted(id) {
-  //   const updatedTasks = tasks.map((task) => {
-  //     // if this task has the same ID as the edited task
-  //     if (id === task.id) {
-  //       // use object spread to make a new object
-  //       // whose `completed` prop has been inverted
-  //       return { ...task, completed: !task.completed };
-  //     }
-  //     return task;
-  //   });
-  //   setTasks(updatedTasks);
-  // }
   function toggleTaskCompleted(id) {
     const task = tasks.find((t) => t.id === id);
     fetch(`http://localhost:8000/api/todos/${id}/`, {
@@ -49,28 +37,11 @@ function App(props) {
       .catch((error) => console.error("Error:", error));
   }
 
-  // function deleteTask(id) {
-  //   const remainingTasks = tasks.filter((task) => id !== task.id);
-  //   setTasks(remainingTasks);
-  // }
   function deleteTask(id) {
     fetch(`http://localhost:8000/api/todos/${id}/`, { method: "DELETE" })
       .then(() => setTasks(tasks.filter((task) => id !== task.id)))
       .catch((error) => console.error("Error:", error));
   }
-
-  // function editTask(id, newName) {
-  //   const editedTaskList = tasks.map((task) => {
-  //     // if this task has the same ID as the edited task
-  //     if (id === task.id) {
-  //       // Copy the task and update its name
-  //       return { ...task, name: newName };
-  //     }
-  //     // Return the original task if it's not the edited task
-  //     return task;
-  //   });
-  //   setTasks(editedTaskList);
-  // }
 
   function editTask(id, newName) {
     fetch(`http://localhost:8000/api/todos/${id}/`, {
@@ -109,10 +80,6 @@ function App(props) {
     />
   ));
 
-  // function addTask(name) {
-  //   const newTask = { id: `todo-${nanoid()}`, name, completed: false };
-  //   setTasks([...tasks, newTask]);
-  // }
   function addTask(name) {
     fetch("http://localhost:8000/api/todos/", {
       method: "POST",
