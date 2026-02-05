@@ -15,11 +15,17 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 function App(props) {
   const [filter, setFilter] = useState("All");
   // const apiURL = "http://localhost:8000";
-  const apiURL = "https://django-todo-backend-kj1d.onrender.com";
+  // const apiURL = "https://django-todo-backend-kj1d.onrender.com";
+  const API_URL = import.meta.env.VITE_DJANGO_API_URL;
 
   // Added this
   useEffect(() => {
-    fetch(`${apiURL}/api/todos/`)
+    if (!API_URL) {
+      console.error("Missing VITE_DJANGO_API_URL env var");
+      return;
+    }
+
+    fetch(`${API_URL}/todos/`)
       .then((response) => response.json())
       .then((data) => setTasks(data))
       .catch((error) => console.error("Error:", error));
@@ -27,7 +33,7 @@ function App(props) {
 
   function toggleTaskCompleted(id) {
     const task = tasks.find((t) => t.id === id);
-    fetch(`${apiURL}/api/todos/${id}/`, {
+    fetch(`${API_URL}/todos/${id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ completed: !task.completed }),
@@ -40,13 +46,13 @@ function App(props) {
   }
 
   function deleteTask(id) {
-    fetch(`${apiURL}/api/todos/${id}/`, { method: "DELETE" })
+    fetch(`${API_URL}/todos/${id}/`, { method: "DELETE" })
       .then(() => setTasks(tasks.filter((task) => id !== task.id)))
       .catch((error) => console.error("Error:", error));
   }
 
   function editTask(id, newName) {
-    fetch(`${apiURL}/api/todos/${id}/`, {
+    fetch(`${API_URL}/todos/${id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: newName }),
@@ -83,7 +89,7 @@ function App(props) {
   ));
 
   function addTask(name) {
-    fetch(`${apiURL}/api/todos/`, {
+    fetch(`${API_URL}/todos/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, completed: false }),
