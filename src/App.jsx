@@ -14,10 +14,11 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 
 function App(props) {
   const [filter, setFilter] = useState("All");
+  const apiURL = "http://localhost:8000";
 
   // Added this
   useEffect(() => {
-    fetch("http://localhost:8000/api/todos/")
+    fetch(`${apiURL}/api/todos/`)
       .then((response) => response.json())
       .then((data) => setTasks(data))
       .catch((error) => console.error("Error:", error));
@@ -25,7 +26,7 @@ function App(props) {
 
   function toggleTaskCompleted(id) {
     const task = tasks.find((t) => t.id === id);
-    fetch(`http://localhost:8000/api/todos/${id}/`, {
+    fetch(`${apiURL}/api/todos/${id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ completed: !task.completed }),
@@ -38,13 +39,13 @@ function App(props) {
   }
 
   function deleteTask(id) {
-    fetch(`http://localhost:8000/api/todos/${id}/`, { method: "DELETE" })
+    fetch(`${apiURL}/api/todos/${id}/`, { method: "DELETE" })
       .then(() => setTasks(tasks.filter((task) => id !== task.id)))
       .catch((error) => console.error("Error:", error));
   }
 
   function editTask(id, newName) {
-    fetch(`http://localhost:8000/api/todos/${id}/`, {
+    fetch(`${apiURL}/api/todos/${id}/`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: newName }),
@@ -81,7 +82,7 @@ function App(props) {
   ));
 
   function addTask(name) {
-    fetch("http://localhost:8000/api/todos/", {
+    fetch(`${apiURL}/api/todos/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, completed: false }),
