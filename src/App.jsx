@@ -14,7 +14,8 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 
 function App(props) {
   const [filter, setFilter] = useState("All");
-  const apiURL = "http://localhost:8000";
+  // const apiURL = "http://localhost:8000";
+  const apiURL = "https://django-todo-backend-kj1d.onrender.com";
 
   // Added this
   useEffect(() => {
