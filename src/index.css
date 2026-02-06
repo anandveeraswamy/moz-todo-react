@@ -293,3 +293,146 @@ body {
   opacity: 1;
 }
 /* End checkbox styles */
+
+/* Navigation styles */
+nav {
+  background-color: #4d4d4d;
+  color: white;
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 20%);
+}
+
+nav h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+}
+
+nav h1 a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav h1 a:hover {
+  color: #e0e0e0;
+}
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+nav li {
+  list-style: none;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+nav a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  text-decoration: underline;
+}
+
+nav button {
+  background-color: #ca3c3c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+nav button:hover {
+  background-color: #bd2130;
+}
+
+@media screen and (width >= 550px) {
+  nav h1 {
+    font-size: 2.8rem;
+  }
+}
+/* End navigation styles */
+
+/* Authentication form styles */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 100%;
+}
+
+.auth-form .input__lg {
+  width: 100%;
+  padding: 1.2rem;
+  font-size: 1.6rem;
+  border: 2px solid #d3d3d3;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
+
+.auth-form .input__lg:focus {
+  outline: none;
+  border-color: #4d4d4d;
+  box-shadow: 0 0 0 3px rgba(77, 77, 77, 0.1);
+}
+
+.auth-form .btn__lg {
+  padding: 1.2rem 2rem;
+  font-size: 1.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.auth-form .btn__primary:hover {
+  background-color: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.auth-form .btn__primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #c33;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+@media screen and (width >= 550px) {
+  .auth-form .input__lg {
+    font-size: 1.9rem;
+    padding: 1.5rem;
+  }
+  
+  .auth-form .btn__lg {
+    font-size: 2rem;
+    padding: 1.5rem 2.5rem;
+  }
+}
+/* End authentication form styles */

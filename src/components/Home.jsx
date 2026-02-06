@@ -8,10 +8,21 @@ export default function Home() {
   const { isLoggedIn, username } = useAuth();
 
   return (
-    <h2>
-      {isLoggedIn
-        ? `Welcome, ${username}! You're logged in.`
-        : "Hi, please log in (or register) to use the site"}
-    </h2>
+    <div className="todoapp stack-large">
+      <h1>Django React Todo</h1>
+      <div className="label__lg">
+        {isLoggedIn ? (
+          <>
+            <p>Welcome back, <strong>{username}</strong>! 🎉</p>
+            <p>You're successfully logged in.</p>
+          </>
+        ) : (
+          <>
+            <p>Welcome to TodoMatic! ✨</p>
+            <p>Please log in or register to manage your todos.</p>
+          </>
+        )}
+      </div>
+    </div>
   );
 }

@@ -16,11 +16,14 @@ export default function Navigation() {
   };
 
   return (
-    <nav>
+    <nav className="navbar">
       <h1>
-        <NavLink to="/">Django+React Todo</NavLink>
+        <NavLink to="/">Django React Todo</NavLink>
       </h1>
-      <ul>
+      <ul className="nav-links">
+        <li>
+          <NavLink to="/">Home</NavLink>
+        </li>
         {isLoggedIn ? (
           <>
             <li>

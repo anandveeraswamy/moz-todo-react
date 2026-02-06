@@ -30,8 +30,8 @@ const AuthForm = ({ onSubmit, fields, submitButtonText }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <p className="error">{error}</p>}
+    <form onSubmit={handleSubmit} className="auth-form">
+      {error && <p className="error-message">{error}</p>}
       {fields.map((field) => (
         <input
           key={field.name}
@@ -41,9 +41,10 @@ const AuthForm = ({ onSubmit, fields, submitButtonText }) => {
           value={formData[field.name]}
           onChange={handleChange}
           required={field.required}
+          className="input__lg"
         />
       ))}
-      <button type="submit">{submitButtonText}</button>
+      <button type="submit" className="btn btn__primary btn__lg">{submitButtonText}</button>
     </form>
   );
 };
@@ -74,11 +75,14 @@ export const Login = () => {
   ];
 
   return (
-    <AuthForm
-      onSubmit={handleSubmit}
-      fields={fields}
-      submitButtonText="Login"
-    />
+    <div className="todoapp stack-large">
+      <h1>Login</h1>
+      <AuthForm
+        onSubmit={handleSubmit}
+        fields={fields}
+        submitButtonText="Login"
+      />
+    </div>
   );
 };
 
@@ -110,10 +114,13 @@ export const Register = () => {
   ];
 
   return (
-    <AuthForm
-      onSubmit={handleSubmit}
-      fields={fields}
-      submitButtonText="Register"
-    />
+    <div className="todoapp stack-large">
+      <h1>Register</h1>
+      <AuthForm
+        onSubmit={handleSubmit}
+        fields={fields}
+        submitButtonText="Register"
+      />
+    </div>
   );
 };
