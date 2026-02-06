@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 import { useTodos } from "../hooks/useTodos";
 import Todo from "./Todo";
 import Form from "./Form";
@@ -16,10 +18,20 @@ const FILTER_NAMES = Object.keys(FILTER_MAP);
 /**
  * TodoApp component
  * Main todo list interface with CRUD operations and filtering
+ * Protected route - requires authentication
  */
 export default function TodoApp() {
+  const { isLoggedIn } = useAuth();
+  const navigate = useNavigate();
   const [filter, setFilter] = useState("All");
   const { tasks, toggleTaskCompleted, deleteTask, editTask, addTask } = useTodos();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login");
+    }
+  }, [isLoggedIn, navigate]);
 
   // Filter and map tasks to Todo components
   const taskList = tasks
@@ -49,6 +61,11 @@ export default function TodoApp() {
   // Prepare heading text
   const tasksNoun = taskList.length !== 1 ? "tasks" : "task";
   const headingText = `${taskList.length} ${tasksNoun} remaining`;
+
+  // Don't render if not logged in
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <div className="todoapp stack-large">

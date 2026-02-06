@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "./AuthContext";
 import { Register, Login } from "./components/Authentication";
 import Home from "./components/Home";
-import PrivateComponent from "./components/PrivateComponent";
 import Navigation from "./components/Navigation";
 import TodoApp from "./components/TodoApp";
 
@@ -23,7 +22,6 @@ const AppContent = () => {
         <Route path="/todos" element={<TodoApp />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        {isLoggedIn && <Route path="/private" element={<PrivateComponent />} />}
         <Route path="*" element={<h2>404 Not Found</h2>} />
       </Routes>
     </div>

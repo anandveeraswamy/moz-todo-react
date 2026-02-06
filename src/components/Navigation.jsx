@@ -21,14 +21,8 @@ export default function Navigation() {
         <NavLink to="/">Django+React Todo</NavLink>
       </h1>
       <ul>
-        <li>
-          <NavLink to="/todos">Todos</NavLink>
-        </li>
         {isLoggedIn ? (
           <>
-            <li>
-              <NavLink to="/private">Private</NavLink>
-            </li>
             <li>
               <button onClick={handleLogout}>Logout</button>
             </li>
