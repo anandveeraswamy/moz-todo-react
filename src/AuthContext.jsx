@@ -9,7 +9,15 @@ const authStorage = {
   },
   get: (key) => {
     const item = localStorage.getItem(`${LOCAL_STORAGE_NAMESPACE}.${key}`);
-    return item ? JSON.parse(item) : null;
+    if (!item || item === "undefined" || item === "null") {
+      return null;
+    }
+    try {
+      return JSON.parse(item);
+    } catch (error) {
+      console.error(`Failed to parse localStorage item: ${key}`, error);
+      return null;
+    }
   },
   remove: (key) => {
     localStorage.removeItem(`${LOCAL_STORAGE_NAMESPACE}.${key}`);

@@ -23,9 +23,21 @@ const AuthForm = ({ onSubmit, fields, submitButtonText }) => {
       await onSubmit(formData);
     } catch (error) {
       console.error("AuthForm submission error:", error);
-      setError(
-        "An error occurred (see details in the console). Please try again."
-      );
+      
+      // Extract detailed error message from API response
+      if (error.response?.data) {
+        const errorData = error.response.data;
+        // Convert error object to readable message
+        const errorMessages = Object.entries(errorData)
+          .map(([field, messages]) => {
+            const messageArray = Array.isArray(messages) ? messages : [messages];
+            return `${field}: ${messageArray.join(", ")}`;
+          })
+          .join("; ");
+        setError(errorMessages || "An error occurred. Please try again.");
+      } else {
+        setError("An error occurred. Please try again.");
+      }
     }
   };
 
