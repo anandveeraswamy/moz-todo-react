@@ -1,76 +1,73 @@
 import { useEffect, useState } from "react";
+import { getTodos, createTodo, updateTodo, deleteTodo } from "../services/api";
 
-/**
- * Custom hook for managing todo items and API interactions
- * Handles all fetch operations: GET, POST, PATCH, DELETE
- */
 export function useTodos() {
   const [tasks, setTasks] = useState([]);
-  const API_URL = import.meta.env.VITE_DJANGO_API_URL;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch all todos on component mount
+  // Fetch current user's todos on mount
   useEffect(() => {
-    if (!API_URL) {
-      console.error("Missing VITE_DJANGO_API_URL env var");
-      return;
+    fetchTodos();
+  }, []);
+
+  async function fetchTodos() {
+    try {
+      setLoading(true);
+      const data = await getTodos();
+      setTasks(data);
+    } catch (err) {
+      setError(err.message);
+      console.error("Error fetching todos:", err);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetch(`${API_URL}/todos/`)
-      .then((response) => response.json())
-      .then((data) => setTasks(data))
-      .catch((error) => console.error("Error fetching todos:", error));
-  }, [API_URL]);
-
-  // Toggle task completion status
-  function toggleTaskCompleted(id) {
+  async function toggleTaskCompleted(id) {
     const task = tasks.find((t) => t.id === id);
-    fetch(`${API_URL}/todos/${id}/`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: !task.completed }),
-    })
-      .then((response) => response.json())
-      .then((updatedTask) => {
-        setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
-      })
-      .catch((error) => console.error("Error updating task:", error));
+    try {
+      const updatedTask = await updateTodo(id, { 
+        completed: !task.completed 
+      });
+      setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   }
 
-  // Delete a task
-  function deleteTask(id) {
-    fetch(`${API_URL}/todos/${id}/`, { method: "DELETE" })
-      .then(() => setTasks(tasks.filter((task) => id !== task.id)))
-      .catch((error) => console.error("Error deleting task:", error));
+  async function deleteTask(id) {
+    try {
+      await deleteTodo(id);
+      setTasks(tasks.filter((task) => id !== task.id));
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   }
 
-  // Edit task name
-  function editTask(id, newName) {
-    fetch(`${API_URL}/todos/${id}/`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: newName }),
-    })
-      .then((response) => response.json())
-      .then((updatedTask) => {
-        setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
-      })
-      .catch((error) => console.error("Error editing task:", error));
+  async function editTask(id, newName) {
+    try {
+      const updatedTask = await updateTodo(id, { name: newName });
+      setTasks(tasks.map((t) => (t.id === id ? updatedTask : t)));
+    } catch (error) {
+      console.error("Error editing task:", error);
+    }
   }
 
-  // Add a new task
-  function addTask(name) {
-    fetch(`${API_URL}/todos/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, completed: false }),
-    })
-      .then((response) => response.json())
-      .then((newTask) => setTasks([...tasks, newTask]))
-      .catch((error) => console.error("Error adding task:", error));
+  async function addTask(name) {
+    try {
+      const newTask = await createTodo(name);
+      setTasks([...tasks, newTask]);
+      return newTask;
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   }
 
   return {
     tasks,
+    loading,
+    error,
     toggleTaskCompleted,
     deleteTask,
     editTask,
