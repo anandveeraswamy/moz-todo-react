@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "../AuthContext";
-import { useNavigate } from "react-router-dom";
-import { login as apiLogin, register as apiRegister } from "../services/api";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  requestPasswordReset,
+  confirmPasswordReset,
+} from "../services/api";
 
 const AuthForm = ({ onSubmit, fields, submitButtonText }) => {
   const [formData, setFormData] = useState(
@@ -94,6 +99,9 @@ export const Login = () => {
         fields={fields}
         submitButtonText="Login"
       />
+      <p>
+        <Link to="/forgot-password">Forgot password?</Link>
+      </p>
     </div>
   );
 };
@@ -133,6 +141,113 @@ export const Register = () => {
         fields={fields}
         submitButtonText="Register"
       />
+    </div>
+  );
+};
+
+export const RequestPasswordReset = () => {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setStatus("");
+    try {
+      const response = await requestPasswordReset(email);
+      setStatus(response.message || "If the email exists, a reset link was sent.");
+    } catch (err) {
+      const message = err.response?.data?.error || "Unable to send reset email.";
+      setError(message);
+    }
+  };
+
+  return (
+    <div className="todoapp stack-large">
+      <h1>Reset Password</h1>
+      {status && <p className="success-message">{status}</p>}
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="input__lg"
+        />
+        <button type="submit" className="btn btn__primary btn__lg">
+          Send Reset Link
+        </button>
+      </form>
+    </div>
+  );
+};
+
+export const ConfirmPasswordReset = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [token] = useState(searchParams.get("token") || "");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [status, setStatus] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setStatus("");
+
+    if (newPassword !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    if (!token) {
+      setError("Invalid or missing reset token. Please request a new password reset.");
+      return;
+    }
+
+    try {
+      const response = await confirmPasswordReset(token, newPassword);
+      setStatus(response.message || "Password reset successful.");
+      navigate("/login");
+    } catch (err) {
+      const message = err.response?.data?.error || "Unable to reset password.";
+      setError(message);
+    }
+  };
+
+  return (
+    <div className="todoapp stack-large">
+      <h1>Set New Password</h1>
+      {status && <p className="success-message">{status}</p>}
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input
+          type="password"
+          name="new_password"
+          placeholder="New password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+          className="input__lg"
+        />
+        <input
+          type="password"
+          name="confirm_password"
+          placeholder="Confirm new password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          className="input__lg"
+        />
+        <button type="submit" className="btn btn__primary btn__lg">
+          Update Password
+        </button>
+      </form>
     </div>
   );
 };

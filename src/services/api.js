@@ -33,6 +33,19 @@ export const register = async (username, email, password) => {
   return response.data;
 };
 
+export const requestPasswordReset = async (email) => {
+  const response = await api.post("/auth/password-reset/", { email });
+  return response.data;
+};
+
+export const confirmPasswordReset = async (token, newPassword) => {
+  const response = await api.post("/auth/password-reset-confirm/", {
+    token,
+    new_password: newPassword,
+  });
+  return response.data;
+};
+
 export const logout = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
