@@ -1,0 +1,9 @@
+services:
+  - type: static
+    name: moz-todo-react
+    buildCommand: npm install && npm run build
+    publishDirectory: dist
+    routes:
+      - path: /*
+        destination: /index.html
+
