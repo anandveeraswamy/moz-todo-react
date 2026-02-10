@@ -1,19 +1,18 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useTodos } from '../useTodos';
+import * as api from '../../services/api';
 
-global.fetch = vi.fn();
+vi.mock('../../services/api');
 
 describe('useTodos Hook', () => {
   beforeEach(() => {
-    fetch.mockClear();
+    vi.clearAllMocks();
   });
 
   it('fetches todos on mount', async () => {
     const mockTodos = [{ id: 1, name: 'Test Todo', completed: false }];
-    fetch.mockResolvedValueOnce({
-      json: async () => mockTodos,
-    });
+    api.getTodos.mockResolvedValueOnce(mockTodos);
 
     const { result } = renderHook(() => useTodos());
 
