@@ -70,4 +70,14 @@ export const deleteTodo = async (id) => {
   await api.delete(`/todos/${id}/`);
 };
 
+export const getProfile = async () => {
+  const response = await api.get("/auth/profile/");
+  return response.data;
+};
+
+export const updateProfile = async (data) => {
+  const response = await api.patch("/auth/profile/", data);
+  return response.data;
+};
+
 export default api;

@@ -6,6 +6,7 @@ import {
   RequestPasswordReset,
   ConfirmPasswordReset,
 } from "./components/Authentication";
+import Profile from "./components/Profile";
 import Home from "./components/Home";
 import Navigation from "./components/Navigation";
 import TodoApp from "./components/TodoApp";
@@ -29,6 +30,7 @@ const AppContent = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<RequestPasswordReset />} />
         <Route path="/reset-password" element={<ConfirmPasswordReset />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<h2>404 Not Found</h2>} />
       </Routes>
     </div>
