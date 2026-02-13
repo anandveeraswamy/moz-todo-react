@@ -27,6 +27,9 @@ export default function Navigation() {
         {isLoggedIn ? (
           <>
             <li>
+              <NavLink to="/todos">Todos</NavLink>
+            </li>
+            <li>
               <NavLink to="/profile">Profile</NavLink>
             </li>
             <li>

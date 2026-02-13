@@ -12,9 +12,10 @@ api.interceptors.request.use((config) => {
   const isPublicEndpoint = publicEndpoints.some(endpoint => config.url.includes(endpoint));
   
   if (!isPublicEndpoint) {
-    const accessToken = localStorage.getItem("access_token");
+    const accessToken = localStorage.getItem("appAuthentication.access_token");
     if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+      const token = JSON.parse(accessToken);
+      config.headers.Authorization = `Bearer ${token}`;
     }
   }
   return config;
@@ -22,8 +23,6 @@ api.interceptors.request.use((config) => {
 
 export const login = async (username, password) => {
   const response = await api.post("/auth/token/", { username, password });
-  localStorage.setItem("access_token", response.data.access);
-  localStorage.setItem("refresh_token", response.data.refresh);
   return response.data;
 };
 
@@ -33,8 +32,6 @@ export const register = async (username, email, password) => {
     email,
     password,
   });
-  localStorage.setItem("access_token", response.data.access);
-  localStorage.setItem("refresh_token", response.data.refresh);
   return response.data;
 };
 
@@ -52,8 +49,7 @@ export const confirmPasswordReset = async (token, newPassword) => {
 };
 
 export const logout = () => {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
+  // Token removal handled by AuthContext
 };
 
 export const getTodos = async () => {
