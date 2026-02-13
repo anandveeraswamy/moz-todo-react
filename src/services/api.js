@@ -6,11 +6,16 @@ const api = axios.create({
   baseURL: API_URL,
 });
 
-// Add JWT token to all requests
+// Add JWT token to all requests except public endpoints
 api.interceptors.request.use((config) => {
-  const accessToken = localStorage.getItem("access_token");
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
+  const publicEndpoints = ['/auth/register/', '/auth/token/', '/auth/password-reset/', '/auth/password-reset-confirm/'];
+  const isPublicEndpoint = publicEndpoints.some(endpoint => config.url.includes(endpoint));
+  
+  if (!isPublicEndpoint) {
+    const accessToken = localStorage.getItem("access_token");
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
   }
   return config;
 });
