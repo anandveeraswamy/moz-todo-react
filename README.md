@@ -88,7 +88,7 @@ moz-todo-react/
 
 ### Prerequisites
 
-- Node.js 16 or higher
+- Node.js 22.22.0 (might also work on later versions)
 - npm (comes with Node.js)
 - Git
 
